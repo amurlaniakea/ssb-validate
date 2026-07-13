@@ -3,12 +3,11 @@
 """CLI de ssb-validate (Typer)."""
 from __future__ import annotations
 
-import json
 import typer
 
+from .models import ValidationReport
 from .mp_client import MPClient
 from .stability import validate_stability
-from .models import ValidationReport, ConductivityResult
 
 app = typer.Typer(name="ssb-validate", help="Validador de coherencia para electrolitos solidos.")
 
@@ -20,9 +19,11 @@ def _root() -> None:
 
 @app.command()
 def check(
-    material: str = typer.Option(None, "--material", help="material_id o formula, p.ej. Li7La3Zr2O12"),
+    material: str = typer.Option(None, "--material", help="id de material o formula"),
     cif: str = typer.Option(None, "--cif", help="ruta a estructura CIF (Fase 3)"),
-    conductivity_log: float = typer.Option(None, "--conductivity-log", help="log10(sigma) aportada en S/cm"),
+    conductivity_log: float = typer.Option(
+        None, "--conductivity-log", help="log10(sigma) aportada en S/cm"
+    ),
     poav: float = typer.Option(None, "--poav", help="probe-occupiable volume cm3/g"),
     a: float = typer.Option(None, "--a", help="parametro de red a"),
     b: float = typer.Option(None, "--b", help="parametro de red b"),
@@ -39,10 +40,17 @@ def check(
         stability = validate_stability(client, material or "")
     except Exception as exc:  # noqa: BLE001 - reporte limpio al usuario
         typer.echo(f"Error de validacion: {exc}", err=True)
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from exc
 
     conductivity = None
-    if conductivity_log is not None and poav is not None and a is not None and b is not None and c is not None:
+    have_desc = (
+        conductivity_log is not None
+        and poav is not None
+        and a is not None
+        and b is not None
+        and c is not None
+    )
+    if have_desc:
         from .conductivity import train_oracle, validate_conductivity_coherence
 
         model, _ = train_oracle()

@@ -19,7 +19,7 @@ def main() -> None:
     args = ap.parse_args()
     model, mae = train_oracle(force=args.force)
     print(f"Oracle entrenado. MAE holdout (dataset 2601.10997) = {mae:.3f} log(S/cm)")
-    print(f"Modelo cacheado en data/model_gbr.joblib")
+    print("Modelo cacheado en data/model_gbr.joblib")
 
 
 if __name__ == "__main__":

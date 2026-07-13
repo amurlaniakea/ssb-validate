@@ -14,11 +14,11 @@ import pandas as pd
 import pytest
 
 from ssb_validate.conductivity import (
-    train_oracle,
-    predict_log_sigma,
-    validate_conductivity_coherence,
-    feature_cols,
     UMBRAL_LOG_S_CM,
+    feature_cols,
+    predict_log_sigma,
+    train_oracle,
+    validate_conductivity_coherence,
 )
 
 pytestmark = pytest.mark.slow  # requiere dataset real en data/raw/
@@ -55,7 +55,8 @@ def test_ac3b_coherent_not_flagged():
     r0 = rows[0]
     pred = predict_log_sigma(model, r0["poav"], r0["a"], r0["b"], r0["c"], r0["comp"])
     # aportamos el propio valor predicho -> delta ~0 -> coherente
-    res = validate_conductivity_coherence(model, pred, r0["poav"], r0["a"], r0["b"], r0["c"], r0["comp"])
+    kw = dict(poav=r0["poav"], a=r0["a"], b=r0["b"], c=r0["c"], composition=r0["comp"])
+    res = validate_conductivity_coherence(model, pred, **kw)
     assert res.conductivity_out_of_range is False
     assert abs(res.conductivity_value_log_s_cm - pred) < 1e-6
 
@@ -67,7 +68,8 @@ def test_ac3b_incoherent_flagged():
     r0 = rows[0]
     pred = predict_log_sigma(model, r0["poav"], r0["a"], r0["b"], r0["c"], r0["comp"])
     absurd = pred + (UMBRAL_LOG_S_CM + 1.0)  # diferencia > umbral
-    res = validate_conductivity_coherence(model, absurd, r0["poav"], r0["a"], r0["b"], r0["c"], r0["comp"])
+    kw = dict(poav=r0["poav"], a=r0["a"], b=r0["b"], c=r0["c"], composition=r0["comp"])
+    res = validate_conductivity_coherence(model, absurd, **kw)
     assert res.conductivity_out_of_range is True
 
 
@@ -76,5 +78,6 @@ def test_ac3b_no_value_omits_flag():
     model, _ = train_oracle()
     rows = _sample_rows()
     r0 = rows[0]
-    res = validate_conductivity_coherence(model, None, r0["poav"], r0["a"], r0["b"], r0["c"], r0["comp"])
+    kw = dict(poav=r0["poav"], a=r0["a"], b=r0["b"], c=r0["c"], composition=r0["comp"])
+    res = validate_conductivity_coherence(model, None, **kw)
     assert res.conductivity_out_of_range is None

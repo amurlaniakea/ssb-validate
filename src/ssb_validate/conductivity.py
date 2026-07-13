@@ -19,9 +19,10 @@ documenta explicitamente para no confundir un test de plomería con validez fisi
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import joblib
 import pandas as pd
-from pathlib import Path
 
 from .models import ConductivityResult
 
@@ -68,8 +69,8 @@ def train_oracle(force: bool = False):
         return model, mae
 
     from sklearn.ensemble import GradientBoostingRegressor
-    from sklearn.model_selection import train_test_split
     from sklearn.metrics import mean_absolute_error
+    from sklearn.model_selection import train_test_split
 
     df = _load_dataset()
     X = df[feature_cols()].fillna(0.0).to_numpy()

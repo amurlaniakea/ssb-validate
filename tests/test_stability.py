@@ -11,9 +11,9 @@ from __future__ import annotations
 
 from typer.testing import CliRunner
 
+from ssb_validate.cli import app
 from ssb_validate.mp_client import MPClient, MPClientError
 from ssb_validate.stability import validate_stability
-from ssb_validate.cli import app
 
 # Ground truth medido 2026-07-13 (MP real, LLZO garnet)
 LLZO_E_ABOVE = 0.006846009531249031
@@ -70,7 +70,7 @@ def test_ac1_no_data_raises():
     client = _FakeClient([])
     try:
         validate_stability(client, "Nothing")
-        assert False, "debia lanzar MPClientError"
+        raise AssertionError("debia lanzar MPClientError")
     except MPClientError:
         pass
 

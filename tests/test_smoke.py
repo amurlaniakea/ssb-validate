@@ -16,8 +16,8 @@ def test_package_imports():
 
 
 def test_validation_report_model():
-    from ssb_validate.stability import UNSTABLE_THRESHOLD_EV
     from ssb_validate.models import StabilityResult
+    from ssb_validate.stability import UNSTABLE_THRESHOLD_EV
 
     rep = ValidationReport(
         formula="Li7La3Zr2O12",
