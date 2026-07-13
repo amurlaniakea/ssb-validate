@@ -36,6 +36,10 @@ UMBRAL_LOG_S_CM = 4.0
 _DATASET_XLSX = Path(__file__).resolve().parents[2] / "data" / "raw" / "all_cif_data.xlsx"
 _MODEL_CACHE = Path(__file__).resolve().parents[2] / "data" / "model_gbr.joblib"
 
+# Fuente primaria del dataset (paper arXiv 2601.10997, cita explícita en el PDF):
+# Zenodo 10.5281/zenodo.17157647, archivo all_cif_data.xlsx (sheet 'all', n=499).
+_ZENODO_XLSX = "https://zenodo.org/records/17157647/files/all_cif_data.xlsx"
+
 _ELEMENT_COLS = [
     "Ag","Al","B","Ba","Bi","Br","C","Ca","Ce","Cl","Co","Cr","Cu","Er","F",
     "Fe","Ga","Gd","Ge","H","Hf","I","In","K","La","Li","Lu","Mg","Mn","Mo","N",
@@ -45,10 +49,30 @@ _ELEMENT_COLS = [
 _GEOM_COLS = ["POAV (cm3/g)", "a", "b", "c"]
 
 
+def _ensure_dataset() -> None:
+    """Descarga el dataset de Zenodo (fuente primaria) si no esta en data/raw/.
+
+    Reproducible y automatico: el slow-suite de CI no commitea el binario, asi
+    que lo baja en caliente. Nunca se usa un fixture sintetico.
+    """
+    if _DATASET_XLSX.is_file():
+        return
+    _DATASET_XLSX.parent.mkdir(parents=True, exist_ok=True)
+    import urllib.request
+
+    req = urllib.request.Request(
+        _ZENODO_XLSX, headers={"User-Agent": "Mozilla/5.0 (research ssb-validate)"}
+    )
+    with urllib.request.urlopen(req, timeout=120) as r:
+        _DATASET_XLSX.write_bytes(r.read())
+
+
+
 def _load_dataset() -> pd.DataFrame:
+    _ensure_dataset()
     if not _DATASET_XLSX.is_file():
         raise FileNotFoundError(
-            f"Dataset no encontrado: {_DATASET_XLSX}. Ejecuta train_conductivity.py."
+            f"Dataset no encontrado tras descarga: {_DATASET_XLSX}."
         )
     df = pd.read_excel(_DATASET_XLSX, sheet_name="all")
     needed = ["log_target(S/cm)"] + _GEOM_COLS + _ELEMENT_COLS

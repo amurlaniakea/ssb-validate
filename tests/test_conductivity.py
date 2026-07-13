@@ -14,6 +14,7 @@ import pandas as pd
 import pytest
 
 from ssb_validate.conductivity import (
+    _DATASET_XLSX,
     UMBRAL_LOG_S_CM,
     feature_cols,
     predict_log_sigma,
@@ -25,9 +26,7 @@ pytestmark = pytest.mark.slow  # requiere dataset real en data/raw/
 
 
 def _sample_rows():
-    df = pd.read_excel(
-        "data/raw/all_cif_data.xlsx", sheet_name="all"
-    ).dropna(subset=["log_target(S/cm)"])
+    df = pd.read_excel(_DATASET_XLSX, sheet_name="all").dropna(subset=["log_target(S/cm)"])
     geom = ["POAV (cm3/g)", "a", "b", "c"]
     elems = [c for c in feature_cols() if c not in geom]
     rows = []
