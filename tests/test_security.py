@@ -29,6 +29,9 @@ def test_ac5_key_not_in_source():
 
 def test_ac5_resolves_from_credentials(monkeypatch):
     """AC-5: resolve_mp_api_key lee del credentials store (sin env MP_API_KEY)."""
+    cred = Path.home() / ".hermes" / "credentials" / "platforms.json"
+    if not cred.is_file():
+        pytest.skip("No credentials store local (esperado en CI sin secret)")
     monkeypatch.delenv("MP_API_KEY", raising=False)
     key = resolve_mp_api_key()
     assert key is not None, "No se resolvio la key desde credentials store"
@@ -38,10 +41,11 @@ def test_ac5_resolves_from_credentials(monkeypatch):
 @pytest.mark.slow
 def test_ac1_external_llzo_real_mp():
     """AC-1 (validez EXTERNA): contra MP real, LLZO devuelve E_above_hull ~0 (estable)."""
+    if not resolve_mp_api_key():
+        pytest.skip("MP_API_KEY no disponible (esperado en CI sin secret)")
     from ssb_validate.mp_client import MPClient
     from ssb_validate.stability import validate_stability
 
-    # Requiere MP_API_KEY en env o credentials store con la key real.
     client = MPClient()
     res = validate_stability(client, "Li7La3Zr2O12")
     assert res.material_id is not None
