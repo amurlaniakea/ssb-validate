@@ -1,8 +1,16 @@
 # Copyright (C) 2026 Pedro Sordo Martinez
 # SPDX-License-Identifier: AGPL-3.0-or-later
-"""AC-5: la API key NO esta hardcodeada en el binario y se resuelve del credentials store."""
+"""AC-5: la API key NO esta hardcodeada en el binario ni en el repo.
+
+IMPORTANTE (post-incidente 2026-07-13): este test NUNCA contiene el literal de
+la key. La lee del credentials store local (fuera del repo) y la usa para:
+  (a) grepear todo el repo (src/ Y tests/) y afirmar que NO aparece, y
+  (b) verificar que resolve_mp_api_key() la resuelve.
+Si no hay credentials store local (p.ej. CI sin secret), el test hace skip.
+"""
 from __future__ import annotations
 
+import json
 import subprocess
 from pathlib import Path
 
@@ -11,20 +19,42 @@ import pytest
 from ssb_validate.secrets import resolve_mp_api_key
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-# Key real guardada en credentials store (NO debe aparecer en src/)
-REAL_KEY = "REDACTED"
 
 
-def test_ac5_key_not_in_source():
-    """AC-5: grep del literal de la key en src/ debe ser vacio."""
+def _store_key() -> str | None:
+    """Lee la key real del credentials store local (NO hardcodeada en el test)."""
+    cred = Path.home() / ".hermes" / "credentials" / "platforms.json"
+    if not cred.is_file():
+        return None
+    try:
+        d = json.loads(cred.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    mp = d.get("materials_project")
+    if isinstance(mp, dict):
+        return mp.get("api_key")
+    return None
+
+
+def test_ac5_key_not_in_repo():
+    """AC-5: la key real (del store) NO aparece en ningun archivo del repo (src/ ni tests/)."""
+    key = _store_key()
+    if not key:
+        pytest.skip("No credentials store local (esperado en CI sin secret)")
     r = subprocess.run(
-        ["grep", "-rn", REAL_KEY, "src/"],
+        [
+            "grep", "-rn", key,
+            "--exclude-dir=.git",
+            "--exclude-dir=__pycache__",
+            "--exclude=tests/test_security.py",
+            ".",
+        ],
         cwd=str(REPO_ROOT),
         capture_output=True,
         text=True,
     )
     # grep exit 1 = no match (lo que queremos). exit 0 = encontrado (FALLO).
-    assert r.returncode == 1, f"API key encontrada en src/: {r.stdout}"
+    assert r.returncode == 1, f"API key encontrada en repo: {r.stdout}"
 
 
 def test_ac5_resolves_from_credentials(monkeypatch):
@@ -35,7 +65,7 @@ def test_ac5_resolves_from_credentials(monkeypatch):
     monkeypatch.delenv("MP_API_KEY", raising=False)
     key = resolve_mp_api_key()
     assert key is not None, "No se resolvio la key desde credentials store"
-    assert key == REAL_KEY
+    assert key == _store_key()
 
 
 @pytest.mark.slow
