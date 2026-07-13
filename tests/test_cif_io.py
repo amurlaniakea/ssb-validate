@@ -13,6 +13,8 @@ import pytest
 
 from ssb_validate.cif_io import CifData, parse_cif
 
+pytest.importorskip("pymatgen")
+
 FIXTURE = Path(__file__).resolve().parents[1] / "tests" / "fixtures" / "llzo.cif"
 
 

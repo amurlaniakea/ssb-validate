@@ -11,8 +11,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from pymatgen.core import Structure
-
 
 @dataclass
 class CifData:
@@ -33,7 +31,14 @@ def parse_cif(path: str | Path) -> CifData:
     Raises:
         FileNotFoundError: si el CIF no existe.
         ValueError: si pymatgen no puede parsear el CIF.
+        ImportError: si pymatgen no esta instalado (extra opcional `cif`).
     """
+    try:
+        from pymatgen.core import Structure
+    except ImportError as exc:  # pymatgen es extra opcional, no core
+        raise ImportError(
+            "pymatgen no instalado. Instala con: pip install ssb-validate[cif]"
+        ) from exc
     p = Path(path)
     if not p.is_file():
         raise FileNotFoundError(f"CIF no encontrado: {p}")
