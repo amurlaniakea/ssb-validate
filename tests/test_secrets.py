@@ -12,8 +12,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 from ssb_validate import secrets as secrets_mod
 from ssb_validate.secrets import resolve_mp_api_key
 

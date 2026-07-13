@@ -77,7 +77,7 @@ def test_get_thermo_401(monkeypatch):
         c = MPClient(api_key="dummy")
         try:
             c.get_thermo("X")
-            assert False, "debia lanzar MPClientError"
+            raise AssertionError("debia lanzar MPClientError")
         except MPClientError as e:
             assert "401" in str(e)
 
@@ -90,7 +90,7 @@ def test_get_thermo_403(monkeypatch):
         c = MPClient(api_key="dummy")
         try:
             c.get_thermo("X")
-            assert False, "debia lanzar MPClientError"
+            raise AssertionError("debia lanzar MPClientError")
         except MPClientError as e:
             assert "403" in str(e)
 
@@ -114,7 +114,7 @@ def test_get_thermo_429_exhausted(monkeypatch):
         c = MPClient(api_key="dummy")
         try:
             c.get_thermo("X", max_retries=2)
-            assert False, "debia lanzar MPClientError"
+            raise AssertionError("debia lanzar MPClientError")
         except MPClientError as e:
             assert "intentos" in str(e)
 
@@ -123,7 +123,7 @@ def test_get_thermo_without_key():
     c = MPClient(api_key="")  # string vacio fuerza rama sin key
     try:
         c.get_thermo("X")
-        assert False, "debia lanzar MPClientError (sin key)"
+        raise AssertionError("debia lanzar MPClientError (sin key)")
     except MPClientError as e:
         assert "MP_API_KEY no resuelto" in str(e)
 
@@ -137,7 +137,7 @@ def test_get_thermo_http_error_exhausted(monkeypatch):
         c = MPClient(api_key="dummy")
         try:
             c.get_thermo("X", max_retries=2)
-            assert False, "debia lanzar MPClientError"
+            raise AssertionError("debia lanzar MPClientError")
         except MPClientError as e:
             assert "intentos" in str(e)
 
