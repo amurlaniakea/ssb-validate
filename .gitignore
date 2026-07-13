@@ -1,0 +1,21 @@
+# ssb-validate — ignore build/test artifacts and secrets
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Secrets / credentials — never commit
+credentials/
+*.env
+.env
+.hermes/
+
+# Local data / fixtures that are not part of source
+data/raw/
+data/model_gbr.joblib
+store.db
