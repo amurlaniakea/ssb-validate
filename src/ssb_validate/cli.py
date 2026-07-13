@@ -20,7 +20,7 @@ def _root() -> None:
 @app.command()
 def check(
     material: str = typer.Option(None, "--material", help="id de material o formula"),
-    cif: str = typer.Option(None, "--cif", help="ruta a estructura CIF (Fase 3)"),
+    cif: str = typer.Option(None, "--cif", help="ruta a estructura CIF (Fase 4)"),
     conductivity_log: float = typer.Option(
         None, "--conductivity-log", help="log10(sigma) aportada en S/cm"
     ),

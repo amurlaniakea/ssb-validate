@@ -31,8 +31,22 @@ Capa de confianza ligera y honesta para cribado de electrolitos sólidos: valida
 
 | Feature ID | Feature | Prioridad | Estimación | Estado |
 |------------|---------|-----------|------------|--------|
-| 006 | Packaging (pyproject, LICENSE, README, RESEARCH.md) + CI lint→test→SonarCloud | P1 | 2d | pendiente |
-| 007 | `gh repo create --source . --push` con aislamiento git (orphan seed main + feature) | P2 | 0.5d | pendiente |
+| 006 | Packaging (pyproject, LICENSE, README, RESEARCH.md) + CI lint→test→SonarCloud | P1 | 2d | **done** |
+| 007 | `gh repo create --source . --push` con aislamiento git (orphan seed main + feature) | P2 | 0.5d | **done** |
+
+### Fase 4 — CIF parsing (pendiente, cubre `--cif` stub)
+**Objetivo:** parsear estructura CIF localmente y alimentar los validadores, en lugar de exigir `--material` o valores manuales.
+
+**Estado actual:** `--cif` existe en la CLI pero es un **stub honesto** — el help lo marca "(Fase 3)" (ahora Fase 4) y, si se pasa sin `--material`, cae a `validate_stability(client, "")` (string vacío): no falla feo pero no hace nada útil. `pymatgen` (dependencia para parsear CIF) NO estaba en pyproject; se añadió como extra opcional `cif` en esta revisión.
+
+| Feature ID | Feature | Prioridad | Estimación | Estado |
+|------------|---------|-----------|------------|--------|
+| 008 | `pymatgen` como extra opcional `cif` en pyproject | P2 | 0.5h | **done** |
+| 009 | Módulo `cif_io.py`: parsear CIF → extraer composition, POAV, params de red, fracciones atómicas | P1 | 1d | pendiente |
+| 010 | CLI `--cif` usa `cif_io` para poblar el oráculo de conductividad y derivar `material_id`/fórmula para MP | P1 | 1d | pendiente |
+| 011 | Tests: CIF de fixture (ej. LLZO) → validación estabilidad + coherencia conductividad sin inputs manuales | P1 | 0.5d | pendiente |
+
+**Alcance:** el parseo CIF alimenta los validadores ya existentes; NO añade predicción nueva. pymatgen es pesado → extra opcional, no en core.
 
 ## Dependencias entre features
 - `002` depende de `001`.
