@@ -46,7 +46,8 @@ jobs:
       - uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        continue-on-error: true
+          SONAR_ORGANIZATION: amurlaniakea
+          SONAR_PROJECT_KEY: amurlaniakea_ssb-validate
 
   slow:
     runs-on: ubuntu-latest
