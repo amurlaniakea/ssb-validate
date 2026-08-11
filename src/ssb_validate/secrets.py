@@ -1,4 +1,4 @@
-# Copyright (C) 2026 Pedro Sordo Martinez
+# Copyright (C) 2026 Pedro Sordo Martínez
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Resolucion de secretos: SOLO desde credentials store o env. NUNCA hardcodeado."""
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# Copyright (C) 2026 Pedro Sordo Martinez
+# Copyright (C) 2026 Pedro Sordo Martínez
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Fast-suite smoke: el paquete importa y la CLI responde sin red."""
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# Copyright (C) 2026 Pedro Sordo Martinez
+# Copyright (C) 2026 Pedro Sordo Martínez
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Tests de mp_client.py SIN red: mocks de httpx.Client y time.sleep.
 

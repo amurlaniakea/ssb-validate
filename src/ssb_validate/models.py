@@ -1,4 +1,4 @@
-# Copyright (C) 2026 Pedro Sordo Martinez
+# Copyright (C) 2026 Pedro Sordo Martínez
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Contratos de datos de ssb-validate. Unica fuente de verdad (SDD: una dataclass/firma)."""
 from __future__ import annotations
