@@ -1,4 +1,4 @@
-# Copyright (C) 2026 Pedro Sordo Martinez
+# Copyright (C) 2026 Pedro Sordo Martínez
 # SPDX-License-Identifier: AGPL-3.0-or-later
 """Tests de estabilidad (AC-1, AC-2, AC-4, AC-5) SIN red: fixture local con valores reales.
 

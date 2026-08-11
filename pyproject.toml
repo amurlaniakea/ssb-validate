@@ -8,8 +8,9 @@ version = "0.1.0"
 description = "Validator de coherencia para electrolitos solidos: estabilidad (Materials Project convex hull) + coherencia de conductividad ionica (benchmark 2601.10997)."
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "AGPL-3.0-or-later" }
-authors = [{ name = "Pedro Sordo Martinez", email = "amurlaniakea@gmail.com" }]
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [{ name = "Pedro Sordo Martínez", email = "amurlaniakea@gmail.com" }]
 keywords = ["solid-state-electrolyte", "battery", "materials-project", "stability", "ionic-conductivity"]
 dependencies = [
     "httpx>=0.27",
